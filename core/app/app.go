@@ -12,7 +12,7 @@ import (
 )
 
 func Run() {
-	SetLogrus(log.WarnLevel)
+	SetLogrus("Warn")
 
 	log.Info("Starting PostgeSQL")
 	pg, err := postgresql.New(":8593", posgresql.MaxPoolSize(1))
