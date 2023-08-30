@@ -1,6 +1,9 @@
 include .env
 export
 
+run:
+	go run -tags migrate cmd/app/main.go
+
 compose-up:
 	docker-compose up --build -d && docker-compose logs -f
 
@@ -20,6 +23,7 @@ migrate-create:
 	migrate create -ext sql -dir migrations 'avito_user_segmenting'
 
 migrate-up:
+#	migrate -path migrations -database '$(PG_URL_LOCALHOST)?sslmode=disable' drop -f
 	migrate -path migrations -database '$(PG_URL_LOCALHOST)?sslmode=disable' up
 
 migrate-down:

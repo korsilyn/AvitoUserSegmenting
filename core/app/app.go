@@ -24,7 +24,7 @@ func Run(configPath string) {
 	SetLogrus(cfg.Log.Level)
 
 	log.Info("Starting PostgeSQL")
-	pg, err := postgresql.New(cfg.PG.URL, posgresql.MaxPoolSize(cfg.PG.MaxPoolSize))
+	pg, err := postgresql.New(cfg.PG.URL, postgresql.MaxPoolSize(cfg.PG.MaxPoolSize))
 	if err != nil {
 		log.Fatal(fmt.Errorf("app - Run - pgdb.NewServices: %w", err))
 	}
@@ -32,9 +32,10 @@ func Run(configPath string) {
 
 	log.Info("Initializing deps")
 	repositories := repo.NewRepositories(pg)
-	deps := service.ServiceDependencies{
+	deps := service.ServicesDependencies{
 		Repos: repositories,
 	}
+	services := service.NewServices(deps)
 	
 	log.Info("Initializing ECHO and router")
 	handler := echo.New()

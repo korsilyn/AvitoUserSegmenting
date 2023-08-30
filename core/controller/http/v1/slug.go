@@ -22,7 +22,7 @@ func newSlugRoutes(g *echo.Group, slugService service.Slug) *slugRoutes {
 }
 
 type slugInput struct {
-	Name string `json:"name" validate:"required"`
+	Name string `json:"name"`
 }
 
 func (r *slugRoutes)create(c echo.Context) error {
@@ -33,14 +33,10 @@ func (r *slugRoutes)create(c echo.Context) error {
 		return err
 	}
 
-	if err := c.Validate(input); err != nil {
-		newErrorResponse(c, http.StatusBadRequest, "Invalid request body")
-		return err
-	}
-
 	id, err := r.slugService.CreateSlug(c.Request().Context(), input.Name)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, "Internal server error")
+		return err
 	}
 
 	type response struct {
@@ -56,11 +52,6 @@ func (r *slugRoutes)remove(c echo.Context) error {
 	var input slugInput
 
 	if err := c.Bind(&input); err != nil {
-		newErrorResponse(c, http.StatusBadRequest, "Invalid request body")
-		return err
-	}
-
-	if err := c.Validate(input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, "Invalid request body")
 		return err
 	}

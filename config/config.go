@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/ilyakaznacheev/cleanenv"
 	"path"
-	"time"
 )
 
 type (
@@ -32,7 +31,7 @@ type (
 		MaxPoolSize int `env-required:"true" yaml:"max_pool_size" env:"PG_MAX_POOL_SIZE"`
 		URL string `env-required:"true" env:"PG_URL"`
 	}
-}
+)
 
 func NewConfig(configPath string) (*Config, error) {
 	cfg := &Config{}

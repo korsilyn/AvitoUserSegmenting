@@ -31,9 +31,9 @@ func (r *OperationRepo) CreateOperation(ctx context.Context, operation entity.Op
 		From("operations").
 		Where("user_id = ? and slug_id = ?", operation.UserId, operation.SlugId).
 		ToSql()
-
-	_, err = tx.Exec(ctx, sql, args...)
-	if err == nil {
+	var tmp int
+	err = tx.QueryRow(ctx, sql, args...).Scan(&tmp)
+	if tmp != 0 {
 		return 0, repoerrors.ErrAlreadyExists
 	}
 
