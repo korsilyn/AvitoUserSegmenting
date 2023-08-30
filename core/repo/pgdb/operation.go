@@ -40,7 +40,7 @@ func (r *OperationRepo) CreateOperation(ctx context.Context, operation entity.Op
 	sql, args, _ = r.Builder.
 		Insert("operations").
 		Columns("user_id", "slug_id", "added_at", "removed_at").
-		Values(operation.UserId, operation.SlugId, operation.AddedAt, time.Time{}).
+		Values(operation.UserId, operation.SlugId, time.Now(), operation.RemovedAt).
 		Suffix("RETURNING id").
 		ToSql()
 	
@@ -78,7 +78,7 @@ func (r *OperationRepo) GetOperationById(ctx context.Context, id int) (entity.Op
 	sql, args, _ := r.Builder.
 		Select("id, user_id, slug_id, added_at, removed_at").
 		From("operations").
-		Where("id = ?", id).
+		Where("id = ? and (removed_at > ? or removed_at = ?)", id, time.Now(), time.Time{}).
 		ToSql()
 
 	var operation entity.Operation
