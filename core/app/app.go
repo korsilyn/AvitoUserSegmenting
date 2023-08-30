@@ -1,6 +1,10 @@
 package app
 
 import (
+	"avito-user-segmenting/config"
+	v1 "avito-user-segmenting/core/controller/http/v1"
+	"avito-user-segmenting/core/repo"
+	"avito-user-segmenting/core/service"
 	"avito-user-segmenting/modules/httpserver"
 	"avito-user-segmenting/modules/postgresql"
 	"fmt"
@@ -11,19 +15,34 @@ import (
 	"syscall"
 )
 
-func Run() {
-	SetLogrus("Warn")
+func Run(configPath string) {
+	cfg, err := config.NewConfig(configPath)
+	if err != nil {
+		log.Fatalf("Config error: %s", err)
+	}
+
+	SetLogrus(cfg.Log.Level)
 
 	log.Info("Starting PostgeSQL")
-	pg, err := postgresql.New(":8593", posgresql.MaxPoolSize(1))
+	pg, err := postgresql.New(cfg.PG.URL, posgresql.MaxPoolSize(cfg.PG.MaxPoolSize))
 	if err != nil {
 		log.Fatal(fmt.Errorf("app - Run - pgdb.NewServices: %w", err))
 	}
 	defer pg.Close()
 
+	log.Info("Initializing deps")
+	repositories := repo.NewRepositories(pg)
+	deps := service.ServiceDependencies{
+		Repos: repositories,
+	}
+	
+	log.Info("Initializing ECHO and router")
+	handler := echo.New()
+	v1.NewRouter(handler, services)
+
 	log.Info("Starting HTTP server")
-	log.Debugf("Server port: %s", "8080")
-	httpServer := httpserver.New(handler, httpserver.Port("8080"))
+	log.Debugf("Server port: %s", cfg.HTTP.Port)
+	httpServer := httpserver.New(handler, httpserver.Port(cfg.HTTP.Port))
 
 	log.Info("Configuring graceful shutdown")
 	interrupt := make(chan os.Signal, 1)
