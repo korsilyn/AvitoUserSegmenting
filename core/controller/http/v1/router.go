@@ -5,6 +5,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	log "github.com/sirupsen/logrus"
+	swag "github.com/swaggo/echo-swagger"
 	"os"
 )
 
@@ -14,6 +15,8 @@ func NewRouter(handler *echo.Echo, services *service.Services) {
 		Output: setLogsFile(),
 	}))
 	handler.Use(middleware.Recover())
+
+	handler.GET("/swagger/*", swag.WrapHandler)
 
 	v1 := handler.Group("/api/v1")
 	{

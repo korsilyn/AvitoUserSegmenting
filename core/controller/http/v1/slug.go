@@ -25,6 +25,15 @@ type slugInput struct {
 	Name string `json:"name"`
 }
 
+// @Summary Create slug
+// @Description Create slug
+// @Tags slugs
+// @Accept json
+// @Produce json
+// @Success 201 {object} v1.slugRoutes.create.response
+// @Failure 400 {object} echo.HTTPError
+// @Failure 500 {object} echo.HTTPError
+// @Router /api/v1/slugs/create [post]
 func (r *slugRoutes)create(c echo.Context) error {
 	var input slugInput
 
@@ -48,6 +57,15 @@ func (r *slugRoutes)create(c echo.Context) error {
 	})
 }
 
+// @Summary Remove slug
+// @Description Remove slug
+// @Tags slugs
+// @Accept json
+// @Produce json
+// @Success 201 {object} v1.slugRoutes.remove.response
+// @Failure 400 {object} echo.HTTPError
+// @Failure 500 {object} echo.HTTPError
+// @Router /api/v1/slugs/remove [post]
 func (r *slugRoutes)remove(c echo.Context) error {
 	var input slugInput
 
@@ -63,10 +81,10 @@ func (r *slugRoutes)remove(c echo.Context) error {
 	}
 	
 	type response struct {
-		message string `json:"message"`
+		Message string `json:"message"`
 	}
 
 	return c.JSON(http.StatusOK, response{
-		message: "Success",
+		Message: "Success",
 	})
 }

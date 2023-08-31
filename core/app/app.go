@@ -15,6 +15,16 @@ import (
 	"syscall"
 )
 
+// @title           Avito User Segmenting
+// @version         1.0
+// @description     This is a service for managing user slugs.
+
+// @contact.name   Eugene Gladkov
+// @contact.email  gladkov.ea@mail.com
+
+// @host      localhost:8080
+// @BasePath  /
+
 func Run(configPath string) {
 	cfg, err := config.NewConfig(configPath)
 	if err != nil {
