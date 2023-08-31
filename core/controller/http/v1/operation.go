@@ -1,7 +1,6 @@
 package v1
 
 import (
-	"avito-user-segmenting/core/entity"
 	"avito-user-segmenting/core/service"
 	"github.com/labstack/echo/v4"
 	log "github.com/sirupsen/logrus"
@@ -38,7 +37,7 @@ func (r *operationRoutes) addSlugs(c echo.Context) error {
 		return err
 	}
 
-	id, err := r.operationService.CreateOperations(c.Request().Context(), service.OperationCreateInput{
+	err := r.operationService.CreateOperations(c.Request().Context(), service.OperationCreateInput{
 		Slugs: input.Slugs,
 		UserId: input.UserId,
 		TTL: input.TTL,
@@ -50,11 +49,11 @@ func (r *operationRoutes) addSlugs(c echo.Context) error {
 	}
 
 	type response struct {
-		Id int `json:"id"`
+		Message string `json:"message"`
 	}
 
 	return c.JSON(http.StatusOK, response{
-		Id: id,
+		Message: "Successful",
 	})
 }
 
@@ -81,9 +80,13 @@ func (r *operationRoutes) removeSlugs(c echo.Context) error {
 		return err
 	}
 
-	type response struct {}
+	type response struct {
+		Message string `json:"message"`
+	}
 
-	return c.JSON(http.StatusOK, response{})
+	return c.JSON(http.StatusOK, response{
+		Message: "Successful",
+	})
 }
 
 type getSlugsInput struct {
@@ -106,10 +109,10 @@ func (r *operationRoutes) getSlugs(c echo.Context) error {
 	}
 
 	type response struct {
-		slugs []string `json:"slugs"`
+		Slugs []string `json:"slugs"`
 	}
 
 	return c.JSON(http.StatusOK, response{
-		slugs: output,
+		Slugs: output,
 	})
 }

@@ -75,6 +75,5 @@ func (s *OperationService)GetAllSlugsByUserId(ctx context.Context, userId int) (
 		}
 		output = append(output, slug.Name)
 	}
-
 	return output, nil
 }

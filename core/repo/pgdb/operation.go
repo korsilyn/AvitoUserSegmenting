@@ -101,9 +101,9 @@ func (r *OperationRepo) GetOperationById(ctx context.Context, id int) (entity.Op
 
 func (r *OperationRepo) GetAllSlugsByUserId(ctx context.Context, userId int) ([]int, error) {
 	sql, args, _ := r.Builder.
-		Select("slug_id").
+		Select("slug_id", "removed_at").
 		From("operations").
-		Where("user_id = ? and removed_at = ?", userId, time.Time{}).
+		Where("user_id = ?", userId).
 		ToSql()
 
 	rows, err := r.Pool.Query(ctx, sql, args...)
@@ -112,16 +112,18 @@ func (r *OperationRepo) GetAllSlugsByUserId(ctx context.Context, userId int) ([]
 	}
 	defer rows.Close()
 
-	var slugs []int
+	slugs := make([]int, 0, 200)
 	for rows.Next() {
 		var id int
-		err = rows.Scan(&id)
+		var removed time.Time
+		err = rows.Scan(&id, &removed)
 		if err != nil {
 			return nil, fmt.Errorf("OperationRepo.GetAllSlugsByUserId - rows.Scan: %v", err)
 		}
 
-		slugs = append(slugs, id)
+		if (removed.After(time.Now())) {
+			slugs = append(slugs, id)
+		}
 	}
-
 	return slugs, nil
 }
