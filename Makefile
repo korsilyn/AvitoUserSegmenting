@@ -41,4 +41,5 @@ mockgen:
 	mockgen -source=core/service/service.go -destination=core/mocks/servicemocks/service.go -package=servicemocks
 	mockgen -source=core/repo/repo.go -destination=core/mocks/repomocks/repo.go -package=repomocks
 
-
+swag:
+	swag init -g internal/app/app.go --parseInternal --parseDependency
