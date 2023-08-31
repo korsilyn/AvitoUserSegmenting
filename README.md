@@ -29,25 +29,24 @@ make compose-up
 Некоторые примеры запросов
 - [Создание сегмента](#create-seg)
 - [Удаление сегмента](#del-seg)
-- [Добавление/Удаление сегментов](#add-remove)
+- [Добавление сегментов](#addseg)
+- [Удаление сегментов](#removeseg)
 - [Получение списка сегментов](#seg-list)
 
 ### Создание сегмента <a name="create-seg"></a>
 
-При создании сегмента реализована опция указания процента пользователей (из общего колличества), которые попадут в этот сегмент автоматически, а так же есть возможность установить TTL:
+Создание сегмента:
 ```curl
-curl --location --request POST 'http://localhost:8080/segment' \
+curl --location --request POST 'http://localhost:8080/api/v1/slugs/create' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-    "slug": "AVITO_SALE_60",
-    "expiration_date": "2023-12-31T23:59:59Z",
-    "random_percentage": 0.0
+    "name": "AVITO_SALE_60"
 }'
 ```
 Пример ответа:
 ```json
 {
-   "message": "Segment and user assignments created successfully"
+    "id": 1
 }
 ```
 
@@ -55,50 +54,54 @@ curl --location --request POST 'http://localhost:8080/segment' \
 
 Удаление сегмента по указанному slug:
 ```curl
-curl --location --request DELETE 'http://localhost:8080/segment' \
+curl --location --request DELETE 'http://localhost:8080/api/v1/slugs/remove' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-    "slug": "AVITO_SALE_60"
+    "name": "AVITO_SALE_60"
 }'
 ```
 Пример ответа:
 ```json
 {
-   "message": "Segment deleted successfully",
-   "segment_id": 1
+   "message": "Successful"
 }
 ```
 
-### Добавление/Удаление сегментов <a name="add-remove"></a>
+### Добавление сегментов <a name="addseg"></a>
 
-Добавление / удаление сегментов пользователя списком без перетирания существующих сегментов с возможностью установить TTL.
+Добавление сегментов пользователя списком без перетирания существующих сегментов с возможностью установить TTL.
 ```curl
-curl --location --request POST 'http://localhost:8080/user/segments' \
+curl --location --request POST 'http://localhost:8080/api/v1/operations/add' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-    "user_id": 1,
-    "add": [
-    {
-      "slug": "AVITO_SALE_10",
-      "expiration_date": "2023-12-31T23:59:59Z"
-    },
-    {
-      "slug": "AVITO_SALE_30",
-      "expiration_date": "2023-11-30T23:59:59Z"
-    },
-    {
-      "slug": "AVITO_SALE_20",
-      "expiration_date": "2023-11-30T23:59:59Z"
-    }
-    ], 
-    "remove": ["AVITO_SALE_40"]
+    "percent": 10,
+    "slugs": ["AVITO_SALE_10"],
+    "ttl": 10
 }'
 ```
 Пример ответа:
 ```json
 {
-   "message": "User segments updated successfully",
-   "user_id": 1
+   "message": "Successful"
+}
+
+```
+
+### Удаление сегментов <a name="removeseg"></a>
+
+Удаление сегментов пользователя.
+```curl
+curl --location --request POST 'http://localhost:8080/api/v1/operations/remove' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "slugs": ["AVITO_SALE_10"],
+    "user_id": 1,
+}'
+```
+Пример ответа:
+```json
+{
+   "message": "Successful"
 }
 
 ```
@@ -107,7 +110,7 @@ curl --location --request POST 'http://localhost:8080/user/segments' \
 
 Получение списка сегментов пользователя по id:
 ```curl
-curl --location --request GET 'http://localhost:8080/user/segments' \
+curl --location --request GET 'http://localhost:8080/api/v1/operations' \
 --header 'Content-Type: application/json' \
 --data-raw '{
    "user_id": 1
@@ -116,8 +119,7 @@ curl --location --request GET 'http://localhost:8080/user/segments' \
 Пример ответа:
 ```json
 {
-   "segments": ["AVITO_SALE_10","AVITO_SALE_30"],
-   "user_id": 1
+   "slugs": ["AVITO_SALE_10","AVITO_SALE_30"]
 }
 ```
 
