@@ -121,7 +121,7 @@ func (r *OperationRepo) GetAllSlugsByUserId(ctx context.Context, userId int) ([]
 			return nil, fmt.Errorf("OperationRepo.GetAllSlugsByUserId - rows.Scan: %v", err)
 		}
 
-		if (removed.After(time.Now())) {
+		if (removed.After(time.Now()) || removed == time.Time{}) {
 			slugs = append(slugs, id)
 		}
 	}
