@@ -25,7 +25,7 @@ func newOperationRoutes(g *echo.Group, operationService service.Operation) *oper
 
 type addSlugsInput struct {
 	Slugs []string `json:"slugs"`
-	UserId int `json:"user_id"`
+	Percent int `json:"percent"`
 	TTL int `json:"ttl"`
 }
 
@@ -39,7 +39,7 @@ func (r *operationRoutes) addSlugs(c echo.Context) error {
 
 	err := r.operationService.CreateOperations(c.Request().Context(), service.OperationCreateInput{
 		Slugs: input.Slugs,
-		UserId: input.UserId,
+		Percent: input.Percent,
 		TTL: input.TTL,
 	})
 	if err != nil {

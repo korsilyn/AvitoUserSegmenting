@@ -12,7 +12,7 @@ type Slug interface {
 
 type OperationCreateInput struct {
 	Slugs []string
-	UserId int
+	Percent int
 	TTL int
 }
 

@@ -5,6 +5,8 @@ import (
 	"avito-user-segmenting/core/repo"
 	"context"
 	"fmt"
+	"math/rand"
+	"slices"
 	"time"
 )
 
@@ -24,7 +26,6 @@ func (s *OperationService)CreateOperations(ctx context.Context, input OperationC
 	for _, name := range input.Slugs {
 		var operation entity.Operation
 		var slug entity.Slug
-		operation.UserId = input.UserId
 		slug, err := s.slugRepo.GetSlugByName(ctx, name)
 		if err != nil {
 			return fmt.Errorf("OperationService.CreateOperations - GetSlugByName: %v", err)
@@ -36,9 +37,24 @@ func (s *OperationService)CreateOperations(ctx context.Context, input OperationC
 		} else {
 			operation.RemovedAt = time.Time{}
 		}
-		_, err = s.operationRepo.CreateOperation(ctx, operation)
-		if err != nil {
-			return fmt.Errorf("OperationService.CreateOperation - CreateOperation: %v", err)
+		
+		// Из-за того, что я взял пользователей 1000-1099
+		ids := make([]int, 0, input.Percent)
+		for i := 0; i < input.Percent; i++ {
+			rand.Seed(time.Now().UnixNano())
+			min := 1000
+			max := 1099
+			id := rand.Intn(max - min + 1) + min
+			if slices.Contains(ids, id) {
+				i--
+				continue
+			}
+			ids = append(ids, id)
+			operation.UserId = id
+			_, err = s.operationRepo.CreateOperation(ctx, operation)
+			if err != nil {
+				return fmt.Errorf("OperationService.CreateOperation - CreateOperation: %v", err)
+			}
 		}
 	}
 
