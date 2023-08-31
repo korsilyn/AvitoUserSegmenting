@@ -50,7 +50,8 @@ func (r *SlugRepo) RemoveSlugByName(ctx context.Context, name string) error {
 
 	_, err := r.Pool.Exec(ctx, sql, args...)
 	if err != nil {
-		return fmt.Errorf("SlugRepo.RemoveSlugByName - r.Pool.Exec: %v", err)
+		return repoerrors.ErrNotFound
+		//return fmt.Errorf("SlugRepo.RemoveSlugByName - r.Pool.Exec: %v", err)
 	}
 	
 	return nil

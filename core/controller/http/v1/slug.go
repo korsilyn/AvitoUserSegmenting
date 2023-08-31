@@ -35,7 +35,7 @@ func (r *slugRoutes)create(c echo.Context) error {
 
 	id, err := r.slugService.CreateSlug(c.Request().Context(), input.Name)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "Internal server error")
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return err
 	}
 
@@ -58,10 +58,15 @@ func (r *slugRoutes)remove(c echo.Context) error {
 
 	err := r.slugService.RemoveSlugByName(c.Request().Context(), input.Name)
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, "Internal server error")
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return err
 	}
 	
-	type response struct {}
+	type response struct {
+		message string `json:"message"`
+	}
 
-	return c.JSON(http.StatusOK, response{})
+	return c.JSON(http.StatusOK, response{
+		message: "Success",
+	})
 }

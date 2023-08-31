@@ -26,7 +26,7 @@ func (r *OperationRepo) CreateOperation(ctx context.Context, operation entity.Op
 	}
 	defer func() { _ = tx.Rollback(ctx) }()
 
-	sql, args, _ := r.Builder.
+	/*sql, args, _ := r.Builder.
 		Select("id").
 		From("operations").
 		Where("user_id = ? and slug_id = ?", operation.UserId, operation.SlugId).
@@ -35,11 +35,11 @@ func (r *OperationRepo) CreateOperation(ctx context.Context, operation entity.Op
 	err = tx.QueryRow(ctx, sql, args...).Scan(&tmp)
 	if tmp != 0 {
 		return 0, repoerrors.ErrAlreadyExists
-	}
+	}*/
 
-	sql, args, _ = r.Builder.
+	sql, args, _ := r.Builder.
 		Insert("operations").
-		Columns("user_id", "slug_id", "added_at", "removed_at").
+		Columns("user_id", "slug_id", "created_at", "removed_at").
 		Values(operation.UserId, operation.SlugId, time.Now(), operation.RemovedAt).
 		Suffix("RETURNING id").
 		ToSql()
@@ -62,7 +62,7 @@ func (r *OperationRepo) RemoveOperationByUserId(ctx context.Context, userId int,
 	sql, args, _ := r.Builder.
 		Update("operations").
 		Where("user_id = ? and slug_id = ?", userId, slugId).
-		Set("removed_at = ?", time.Now()).
+		Set("removed_at", time.Now()).
 		ToSql()
 	
 	_, err := r.Pool.Exec(ctx, sql, args...)
