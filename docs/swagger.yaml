@@ -1,0 +1,181 @@
+basePath: /
+definitions:
+  core_controller_http_v1.addSlugsInput:
+    properties:
+      percent:
+        type: integer
+      slugs:
+        items:
+          type: string
+        type: array
+      ttl:
+        type: integer
+    type: object
+  core_controller_http_v1.getSlugsInput:
+    properties:
+      user_id:
+        type: integer
+    type: object
+  core_controller_http_v1.operationRoutes:
+    type: object
+  core_controller_http_v1.removeSlugsInput:
+    properties:
+      slugs:
+        items:
+          type: string
+        type: array
+      user_id:
+        type: integer
+    type: object
+  core_controller_http_v1.slugRoutes:
+    type: object
+  echo.HTTPError:
+    properties:
+      message: {}
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: gladkov.ea@mail.com
+    name: Eugene Gladkov
+  description: This is a service for managing user slugs.
+  title: Avito User Segmenting
+  version: "1.0"
+paths:
+  /api/v1/operations/:
+    get:
+      consumes:
+      - application/json
+      description: Get all slugs of user
+      parameters:
+      - description: input
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/core_controller_http_v1.getSlugsInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/core_controller_http_v1.operationRoutes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Get operations
+      tags:
+      - operations
+  /api/v1/operations/add:
+    post:
+      consumes:
+      - application/json
+      description: Add slugs to some percent of users
+      parameters:
+      - description: input
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/core_controller_http_v1.addSlugsInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/core_controller_http_v1.operationRoutes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Create operation
+      tags:
+      - operations
+  /api/v1/operations/remove:
+    post:
+      consumes:
+      - application/json
+      description: Remove slug from user
+      parameters:
+      - description: input
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/core_controller_http_v1.removeSlugsInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/core_controller_http_v1.operationRoutes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Remove operation
+      tags:
+      - operations
+  /api/v1/slugs/create:
+    post:
+      consumes:
+      - application/json
+      description: Create slug
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/core_controller_http_v1.slugRoutes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Create slug
+      tags:
+      - slugs
+  /api/v1/slugs/remove:
+    post:
+      consumes:
+      - application/json
+      description: Remove slug
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/core_controller_http_v1.slugRoutes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Remove slug
+      tags:
+      - slugs
+swagger: "2.0"
