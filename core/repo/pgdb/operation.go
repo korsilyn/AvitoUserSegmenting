@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/jackc/pgx/v5"
+	"slices"
 	"time"
 )
 
@@ -122,7 +123,9 @@ func (r *OperationRepo) GetAllSlugsByUserId(ctx context.Context, userId int) ([]
 		}
 
 		if (removed.After(time.Now()) || removed == time.Time{}) {
-			slugs = append(slugs, id)
+			if (!slices.Contains(slugs, id)) {
+				slugs = append(slugs, id)
+			}
 		}
 	}
 	return slugs, nil
